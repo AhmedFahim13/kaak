@@ -29,7 +29,9 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 
 - Two flavors: `full` (app id `app.kaak`) and `study` (`app.kaak.study`, `BuildConfig.STUDY = true`).
 - Release signing reads `keystore.properties` locally or `KAAK_*` env vars in CI
-  (`.github/workflows/release.yml`, triggered by tags `v*`; never run yet).
+  (`.github/workflows/release.yml`, triggered by tags `v*`). First run: v0.10.2 on 2026-10-17, both
+  APKs signed `CN=Fahim Ahmed` (keystore `C:\Users\hp\kaak-release.jks`, outside the repo; back it
+  up). Repo: github.com/AhmedFahim13/kaak, private, so testers can't pull releases until it's public.
 - Gradle 8.9 needs JDK 17–22. On this PC `JAVA_HOME` is unset and Android Studio's bundled JBR
   is JDK 25 (fails with just "25.0.3"); use `C:\Users\hp\.jdks\jbr-21.0.11`.
 - Real-device testing has been two sessions on a Samsung Galaxy M33. There is also an emulator
@@ -80,8 +82,9 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 2. Play Protect blocks sideloaded installs (Accessibility apps). Workaround: testers temporarily
    turn off "Scan apps with Play Protect". Obtainium installs may avoid it (untested).
 3. Rep thresholds tuned on simulated motion only. Battery use unmeasured.
-4. 5-friend pilot and 40-person study not started. GitHub release workflow never run (the folder
-   isn't a git repo yet); its Gradle command passes locally with debug-key fallback.
+4. 5-friend pilot and 40-person study not started. Anyone with an earlier debug-signed build must
+   uninstall it before installing the release-signed v0.10.2 (different signature).
+   The workflow's actions run on deprecated Node 20 (`setup-java@v4` etc.): bump to v5 at some point.
 5. Possible next: browser extension (reuse the JS engine in `docs/kaak-animation-board.html`).
 
 ## Other files
