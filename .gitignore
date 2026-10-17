@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.keystore
+# release signing: keep these out of git, back them up somewhere safe
+keystore.properties
+*.jks
+release.jks
+.kotlin/
+# testers' names and emails: personal data, keep it on this PC only
+docs/kaak-recipients.csv

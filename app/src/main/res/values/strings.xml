@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kaak</string>
+    <string name="a11y_description">Kaak watches which app is open and how fast you scroll in the feed apps you choose, then sends a crow to interrupt mindless scrolling. For the reply bribe he counts that you typed in your chat app, never what. Only while strict mode is on, he checks the titles of Settings and uninstall screens for his own name, and notices when you tap his name in Settings or on the home screen, to stop you quitting on impulse; taps in other apps are ignored unread, and nothing is saved. It never reads what is on your screen, your posts or your messages. Kaak has no internet access, so nothing leaves your phone.</string>
+</resources>

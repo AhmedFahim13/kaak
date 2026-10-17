@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Kaak always looks like Kaak: marigold, ink, no grey toolbar. -->
+    <style name="Theme.Kaak" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/kaak_sky</item>
+        <item name="android:colorBackground">@color/kaak_sky</item>
+        <item name="android:statusBarColor">@color/kaak_sky</item>
+        <item name="android:navigationBarColor">@color/kaak_sky</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:colorAccent">@color/kaak_ink</item>
+        <item name="android:colorPrimary">@color/kaak_ink</item>
+        <item name="android:textColorPrimary">@color/kaak_ink</item>
+        <item name="android:textColorHint">@color/kaak_ochre</item>
+    </style>
+</resources>
