@@ -8,6 +8,10 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 
 - **Zero cost.** No paid services, no server, no runtime dependencies (only `junit` for tests).
 - **No `INTERNET` permission.** Nothing leaves the phone except what the user shares by hand.
+  *Approved for later (2026-10-26), not built:* opt-in, end-to-end encrypted live sync with the
+  browser extension, via a free-tier relay. Only the `full` flavor would get `INTERNET`; `study`
+  stays offline. Off by default. Planned after the pilot (extension milestone M5, spec §9). When it
+  lands, update this rule, `a11y_description`, README "Privacy, in code" and the zero-cost line.
 - **Privacy.** The accessibility service has `canRetrieveWindowContent="false"`: it sees which app
   is in front, scroll events, and text-change *counts*, never content. Only exception: in opt-in
   strict mode it checks the *event text* of Settings/package-installer windows, and of taps in
@@ -85,7 +89,8 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 4. 5-friend pilot and 40-person study not started. Anyone with an earlier debug-signed build must
    uninstall it before installing the release-signed v0.10.2 (different signature).
    The workflow's actions run on deprecated Node 20 (`setup-java@v4` etc.): bump to v5 at some point.
-5. Possible next: browser extension (reuse the JS engine in `docs/kaak-animation-board.html`).
+5. Browser extension (Chromium only): spec at `docs/browser-extension-spec.md`. Being built in
+   `extension/` by a separate session (not committed yet).
 
 ## Other files
 
