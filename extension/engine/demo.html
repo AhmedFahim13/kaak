@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaak engine demo</title>
+<style>
+  :root { --red: #EF4B3F; --ink: #1F1A17; --soft: #5B524C; --line: #E6DFD8; --bg: #F4F1EC; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 'Nunito', 'Hind Siliguri', system-ui, sans-serif; }
+  /* fake feed */
+  .feed { max-width: 560px; margin: 0 auto; padding: 24px 16px 60vh; }
+  .feed h1 { font-size: 22px; margin: 8px 0 4px; }
+  .feed > p { color: var(--soft); margin: 0 0 20px; }
+  .post { background: #fff; border-radius: 16px; margin: 0 0 18px; overflow: hidden; border: 1px solid var(--line); }
+  .post header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-weight: 800; }
+  .post header i { width: 32px; height: 32px; border-radius: 50%; display: inline-block; }
+  .post .pic { aspect-ratio: 4 / 5; }
+  .post footer { padding: 10px 12px 14px; color: var(--soft); }
+  /* overlay canvas, like the content script's */
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 2147483000; touch-action: none; }
+  /* the keyboard chase target sits over Kaak */
+  #kaakHit { position: fixed; z-index: 2147483001; opacity: 0; border: 0; padding: 0; background: transparent; display: none; }
+  #kaakHit:focus-visible { opacity: 1; outline: 3px solid var(--red); border-radius: 12px; background: rgba(239,75,63,0.08); }
+  /* controls */
+  .panel { position: fixed; left: 12px; bottom: 12px; width: 312px; max-height: calc(100vh - 24px); overflow: auto; z-index: 2147483002;
+    background: #fff; border-radius: 18px; border: 2px solid #EEE8E2; box-shadow: 0 6px 0 #E8E2DC, 0 18px 40px rgba(0,0,0,.14); padding: 12px 14px 14px; }
+  .panel h2 { font-size: 16px; margin: 0 0 2px; }
+  .panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--soft); margin: 12px 0 6px; }
+  .panel .status { font-size: 12px; color: var(--soft); min-height: 1.4em; }
+  .btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .btns button, .row select { font: 800 13px 'Nunito', system-ui, sans-serif; color: var(--ink); background: #fff; border: 2px solid var(--line);
+    border-radius: 12px; padding: 6px 10px; box-shadow: 0 3px 0 var(--line); cursor: pointer; }
+  .btns button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+  .btns button.main { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 3px 0 #B8362C; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 13px; }
+  .row label { display: inline-flex; gap: 5px; align-items: center; }
+  .toast { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 12px;
+    font-weight: 700; font-size: 13px; z-index: 2147483003; display: none; max-width: calc(100vw - 32px); }
+  #nextBtn { position: fixed; left: 50%; top: 62%; transform: translateX(-50%); z-index: 10; display: none;
+    font: 800 16px 'Nunito', system-ui, sans-serif; background: var(--red); color: #fff; border: 0; border-radius: 14px; padding: 12px 48px; box-shadow: 0 4px 0 #B8362C; }
+  #sig { position: fixed; right: 40px; bottom: 120px; width: 260px; height: 110px; z-index: 10; display: none; background: #FFF7E0; border-radius: 10px;
+    border: 1px dashed #c9b98a; padding: 10px; font-size: 13px; color: var(--soft); }
+  @media (max-width: 640px) {
+    .panel { left: 0; right: 0; bottom: 0; width: auto; max-height: 46vh; border-radius: 18px 18px 0 0; }
+    #sig { right: 16px; left: 16px; width: auto; bottom: 50vh; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stage" aria-hidden="true"></canvas>
+<button id="kaakHit" type="button" aria-label="Kaak (press Enter to hit him)"></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button id="nextBtn" type="button">Next</button>
+<div id="sig">Sign here. Kaak will stamp it.</div>
+
+<main class="feed" id="feed">
+  <h1>A very long feed</h1>
+  <p>A fake page to scroll under Kaak. The canvas above it is transparent and lets clicks through unless Kaak needs them (splat, chase, hold).</p>
+</main>
+
+<aside class="panel" aria-label="Kaak engine controls">
+  <h2>Kaak engine demo</h2>
+  <div class="status" id="status">loading…</div>
+
+  <h3>Feed</h3>
+  <div class="btns">
+    <button type="button" data-run="arrive" class="main">Arrive</button>
+    <button type="button" data-run="again">Back again</button>
+    <button type="button" data-run="nudge">Nudge</button>
+    <button type="button" data-run="warn">Warn</button>
+    <button type="button" data-run="walkAcross">Walk across</button>
+    <button type="button" data-run="sitOnRail">Sit on rail</button>
+    <button type="button" data-run="splat">Splat</button>
+    <button type="button" data-run="jumpscare">Jumpscare</button>
+    <button type="button" data-run="say">Say…</button>
+    <button type="button" data-run="sitNow">Sit now</button>
+    <button type="button" data-run="hop">Hop</button>
+    <button type="button" data-run="peck">Peck</button>
+  </div>
+
+  <h3>Push it</h3>
+  <div class="btns">
+    <button type="button" data-run="steal">Steal + chase</button>
+    <button type="button" data-run="holdingChase">Holding chase</button>
+    <button type="button" data-run="snatch">Snatch</button>
+    <button type="button" data-run="eat">Eat</button>
+    <button type="button" data-run="nap">Nap cover (hold)</button>
+    <button type="button" data-run="stealButton">Steal Next</button>
+  </div>
+
+  <h3>Night and gifts</h3>
+  <div class="btns">
+    <button type="button" data-run="bedtime">Bedtime</button>
+    <button type="button" data-run="blanket">Blanket</button>
+    <button type="button" data-run="morningGift">Morning gift</button>
+    <button type="button" data-run="times">Kaak Times</button>
+    <button type="button" data-run="nest">Nest</button>
+    <button type="button" data-run="stamp">Contract stamp</button>
+  </div>
+
+  <h3>Modes</h3>
+  <div class="row">
+    <label><input type="checkbox" id="glasses"> Work glasses</label>
+    <label><input type="checkbox" id="calm"> Calm perch</label>
+    <label><input type="checkbox" id="column"> Feed column</label>
+    <label><input type="checkbox" id="reduce"> Reduce motion</label>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <label>Lines <select id="lang"><option value="en">English</option><option value="bl">Banglish</option><option value="bn">বাংলা</option></select></label>
+    <label>Jump <select id="jump"><option>GENTLE</option><option selected>MEDIUM</option><option>FULL</option><option>OFF</option></select></label>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <label>Tile <select id="tile">
+      <option value="F|#1877F2">F (Facebook blue)</option>
+      <option value="I|#E1306C">I (Instagram pink)</option>
+      <option value="Y|#FF0000">Y (YouTube red)</option>
+      <option value="T|#000000">T (TikTok black)</option>
+    </select></label>
+    <label>dp <select id="dp"><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option></select></label>
+  </div>
+  <div class="btns" style="margin-top:10px">
+    <button type="button" data-run="clear">Clear</button>
+  </div>
+</aside>
+
+<script src="kaak-engine.js"></script>
+<script>
+"use strict";
+const E = window.KaakEngine;
+const canvas = document.getElementById("stage");
+const hitBtn = document.getElementById("kaakHit");
+const statusEl = document.getElementById("status");
+const toastEl = document.getElementById("toast");
+const nextBtn = document.getElementById("nextBtn");
+const sig = document.getElementById("sig");
+const $ = id => document.getElementById(id);
+
+// ---- the fake feed
+const feed = document.getElementById("feed");
+const hues = [12, 200, 140, 280, 40, 330, 180, 90];
+for (let i = 0; i < 40; i++) {
+  const h = hues[i % hues.length];
+  const post = document.createElement("article");
+  post.className = "post";
+  post.innerHTML = `<header><i style="background:hsl(${h} 60% 55%)"></i>rooftop_diaries_${i + 1}</header>
+    <div class="pic" style="background:linear-gradient(160deg, hsl(${h} 45% 35%), hsl(${(h + 40) % 360} 60% 60%))"></div>
+    <footer>golden hour from floor ${9 + (i % 7)}. ${120 + i * 37} likes</footer>`;
+  feed.appendChild(post);
+}
+
+// ---- stage
+let stage = null, detachP = null, detachK = null;
+function makeStage() {
+  if (stage) { stage.destroy(); stage.clear(); }
+  canvas.style.pointerEvents = "none";
+  const lang = $("lang").value;
+  stage = E.createStage(canvas, {
+    width: innerWidth, height: innerHeight, dp: +$("dp").value, setStyle: false, // CSS sizes the canvas (100vw x 100vh)
+    reduceMotion: $("reduce").checked,
+    lineFn: E.makeLineFn(lang), fixedFn: E.makeFixedFn(lang),
+    jumpLevel: $("jump").value,
+    tile: currentTile(),
+    glasses: $("glasses").checked, calm: $("calm").checked,
+    onWantsPointer: on => { canvas.style.pointerEvents = on ? "auto" : "none"; },
+    onIdle: () => setStatus(),
+  });
+  stage.attachPointer(canvas);
+  stage.attachKeys(window);
+  applyColumn();
+}
+function currentTile() { const [label, color] = $("tile").value.split("|"); return { label, color }; }
+function applyColumn() {
+  if (!$("column").checked) { stage.setColumn(null, null); return; }
+  const r = feed.getBoundingClientRect();
+  stage.setColumn(r.left, r.right);
+}
+addEventListener("resize", () => { stage.resize(innerWidth, innerHeight); applyColumn(); });
+
+function toast(text, ms = 2600) {
+  toastEl.textContent = text; toastEl.style.display = "block";
+  clearTimeout(toast.t); toast.t = setTimeout(() => { toastEl.style.display = "none"; }, ms);
+}
+function setStatus() {
+  if (!stage) return;
+  statusEl.textContent = `${stage.busy() ? "busy" : stage.hasContent() ? "idle (4 fps)" : "empty (no frames)"} · pointer ${stage.wantsPointer() ? "on" : "off"}` +
+    (stage.chase ? ` · chase ${stage.chase.hits}/5` : "") + ` · ${stage.W}×${stage.H}`;
+}
+setInterval(setStatus, 200);
+
+// keyboard chase: a focusable button kept over Kaak; Enter/Space = one hit
+function trackHit() {
+  if (stage && stage.chase) {
+    const b = stage.kaakBounds();
+    Object.assign(hitBtn.style, { display: "block", left: b.l + "px", top: b.t + "px", width: (b.r - b.l) + "px", height: (b.b - b.t) + "px" });
+  } else hitBtn.style.display = "none";
+  requestAnimationFrame(trackHit);
+}
+requestAnimationFrame(trackHit);
+hitBtn.addEventListener("click", () => { stage.keyHit(); });
+
+// host hooks that a run sets up are removed before the next run
+function resetHost() {
+  stage.custom = null; stage.underlay = null; stage.overlay = null; stage.waiting = false;
+  stage.setDim(0); stage.setBlanket(0); stage.setEaten(0);
+  nextBtn.style.display = "none"; sig.style.display = "none";
+  removeEventListener("keydown", spaceDown); removeEventListener("keyup", spaceUp);
+}
+function spaceDown(e) { if (e.code === "Space" && !e.repeat && !stage.holdStart) { e.preventDefault(); stage.beginHold(5000, escaped); } }
+function spaceUp(e) { if (e.code === "Space") { e.preventDefault(); stage.endHold(); } }
+function escaped() { toast("Escaped: host would grant the 5-min pass."); stage.later(1200, () => { resetHost(); stage.clear(); }); }
+
+const RUNS = {
+  arrive: s => s.arrive(),
+  again: s => s.again(),
+  nudge: s => { if (!s.perched) s.sitNow(); if (!s.nudge(23)) toast("Nudge skipped: Kaak is mid-performance."); },
+  warn: s => s.warn(5),
+  walkAcross: s => s.walkAcross(),
+  sitOnRail: s => s.sitOnRail(40),
+  splat: s => { s.splat(); toast("Drag across the splat, or press Escape.", 3200); },
+  jumpscare: s => { if (s.jumpscare($("jump").value) === false) toast("Jumpscare is Off."); },
+  say: s => { if (!s.perched) s.sitNow(); s.say("hm.", 2200); },
+  sitNow: s => s.sitNow(),
+  hop: s => { if (!s.perched) s.sitNow(); s.hop(s.perch()); },
+  peck: s => { if (!s.perched) s.sitNow(); s.peckHit(); },
+  steal: s => {
+    s.steal(() => toast(s.fixed("tapHint")), () => toast("Won: host sends you to the site's home page."), () => toast("Lost: feeds locked for 3 min."), currentTile());
+  },
+  holdingChase: s => {
+    toast(s.fixed("tapHint") + " (or Tab to Kaak + Enter)", 4000);
+    s.holdingChase(currentTile(), null, () => toast("Won it back."), () => toast("Kaak kept it."));
+  },
+  snatch: s => s.snatch("I'll hold this. you do the thing.", currentTile()),
+  eat: s => {
+    if (!s.perched) s.sitNow();
+    s.eat(() => { toast(s.fixed("detours"), 3000); s.later(2500, () => { s.setEaten(0); s.clear(); }); });
+  },
+  nap: s => {
+    s.sleepOnTile(innerWidth / 2, innerHeight * 0.47, currentTile());
+    s.setDim(0.75, true);
+    s.overlay = (c, t, st) => {
+      c.fillStyle = "#fff"; c.textAlign = "center"; c.font = `800 ${20 * st.DP}px ${st.font}`;
+      c.fillText(st.fixed("asleep", 14), st.W / 2, st.H * 0.18);
+      c.font = `600 ${13 * st.DP}px ${st.font}`; c.fillStyle = "rgba(255,255,255,0.75)";
+      c.fillText(st.fixed("hold") + " (or hold Space)", st.W / 2, st.H * 0.7); c.textAlign = "left";
+    };
+    s.custom = (type, pt, e) => {
+      if (type === "down" && s.hitsKaak(pt, 30 * s.DP)) { s.beginHold(5000, escaped); try { canvas.setPointerCapture(e.pointerId); } catch (x) {} return true; }
+      if (type === "up" && s.holdStart) { s.endHold(); return true; }
+      return false;
+    };
+    addEventListener("keydown", spaceDown); addEventListener("keyup", spaceUp);
+  },
+  stealButton: s => {
+    nextBtn.style.display = "block";
+    const r = nextBtn.getBoundingClientRect();
+    s.stealButton({ x: r.left, y: r.top, w: r.width, h: r.height }, "Next",
+      () => { nextBtn.style.display = "none"; toast(s.fixed("tapHint")); },
+      () => { nextBtn.style.display = "block"; toast(s.fixed("knowHow")); });
+  },
+  bedtime: s => { s.bedArrive(); s.wait(3200, () => { s.blanket(); s.wait(3800, () => s.blanket()); }); },
+  blanket: s => s.blanket(),
+  morningGift: s => s.morningGift(),
+  times: s => {
+    let openAt = 0;
+    s.timesDelivery(() => { openAt = performance.now(); });
+    s.overlay = (c, t, st) => {
+      if (!openAt) return;
+      const W = st.W, H = st.H, k = Math.min(1, (t - openAt) / 450), y = H * (1 - st.ease(k));
+      const w = Math.min(W - 32, 420), x = (W - w) / 2;
+      c.fillStyle = "#F3EEE2"; c.fillRect(x, y + 40, w, H);
+      c.fillStyle = "#1B1B1B"; c.textAlign = "center";
+      c.font = "700 28px Georgia, 'Times New Roman', serif"; c.fillText("The Kaak Times", W / 2, y + 100);
+      c.font = "400 11px Georgia, serif"; c.fillText("Dhaka, week ending 18 October. Price: one bottle cap.", W / 2, y + 120);
+      c.textAlign = "left"; c.font = "700 20px Georgia, serif";
+      E.wrapText(c, "LOCAL HUMAN TRIES TO OPEN FEEDS 47 TIMES", x + 16, y + 160, w - 32, 23);
+      E.drawCrow(c, E.P(W / 2 - 6, y + 300, { facing: 1, headTilt: -0.28, scale: 1.1 }), st.UNIT);
+      if (t - openAt > 5200) st.overlay = null;
+    };
+    s.wait(9500, () => {});
+  },
+  nest: s => {
+    const start = performance.now();
+    s.underlay = (c, t, st) => {
+      const n = Math.min(24, Math.floor((t - start) / 260));
+      E.drawNestScene(c, n, st.W, st.H);
+      st.nestCount = n;
+    };
+    const W = s.W, H = s.H;
+    s.sitNow(E.P(W * 0.46 + W * 0.32 * 0.95, H * 0.7 - W * 0.32 * 0.36 * 0.35, { facing: -1, headTilt: -0.2 }));
+    s.wait(6400, () => s.say(s.fixed("nest", s.nestCount), 3200));
+    s.wait(3400, () => { s.underlay = null; s.clear(); });
+  },
+  stamp: s => {
+    sig.style.display = "block";
+    const r = sig.getBoundingClientRect();
+    s.stamp(r.right - 52, r.bottom - 26, () => toast("Contract stamped."));
+  },
+  clear: s => { s.clear(); },
+};
+
+document.querySelector(".panel").addEventListener("click", e => {
+  const b = e.target.closest("button[data-run]"); if (!b) return;
+  const name = b.dataset.run;
+  resetHost();
+  RUNS[name](stage);
+  setStatus();
+});
+$("glasses").addEventListener("change", e => stage.setGlasses(e.target.checked));
+$("calm").addEventListener("change", e => stage.perchCalm(e.target.checked));
+$("column").addEventListener("change", applyColumn);
+$("jump").addEventListener("change", e => { stage.jumpLevel = e.target.value; });
+$("tile").addEventListener("change", () => { stage.tile = currentTile(); });
+$("lang").addEventListener("change", e => { stage.lineFn = E.makeLineFn(e.target.value); stage.fixedFn = E.makeFixedFn(e.target.value); document.documentElement.lang = e.target.value === "bn" ? "bn" : "en"; });
+$("reduce").addEventListener("change", makeStage);
+$("dp").addEventListener("change", makeStage);
+
+makeStage();
+stage.arrive();
+</script>
+</body>
+</html>

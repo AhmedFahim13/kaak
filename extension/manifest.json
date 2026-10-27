@@ -1,0 +1,96 @@
+{
+  "manifest_version": 3,
+  "name": "Kaak",
+  "short_name": "Kaak",
+  "version": "0.1.0",
+  "description": "A petty Dhaka house crow who interrupts doomscrolling on Instagram, Facebook, TikTok and YouTube.",
+  "author": "Fahim Ahmed",
+  "minimum_chrome_version": "120",
+  "icons": {
+    "16": "assets/icons/kaak-16.png",
+    "32": "assets/icons/kaak-32.png",
+    "48": "assets/icons/kaak-48.png",
+    "128": "assets/icons/kaak-128.png"
+  },
+  "action": {
+    "default_title": "Kaak",
+    "default_popup": "pages/popup.html",
+    "default_icon": {
+      "16": "assets/icons/kaak-16.png",
+      "32": "assets/icons/kaak-32.png"
+    }
+  },
+  "background": {
+    "service_worker": "sw/service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "idle",
+    "declarativeNetRequestWithHostAccess",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.instagram.com/*",
+    "*://*.facebook.com/*",
+    "*://*.tiktok.com/*",
+    "*://*.youtube.com/*"
+  ],
+  "optional_host_permissions": [
+    "*://*.x.com/*",
+    "*://*.twitter.com/*",
+    "*://*.reddit.com/*",
+    "*://*.duolingo.com/*",
+    "*://*.khanacademy.org/*",
+    "*://*.coursera.org/*",
+    "*://*.edx.org/*",
+    "*://*.freecodecamp.org/*",
+    "*://*.codecademy.com/*",
+    "*://*.leetcode.com/*",
+    "*://*.exercism.org/*",
+    "*://ocw.mit.edu/*",
+    "*://*.brilliant.org/*",
+    "*://*.10minuteschool.com/*",
+    "*://*.teachers.gov.bd/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.instagram.com/*",
+        "*://*.facebook.com/*",
+        "*://*.tiktok.com/*",
+        "*://*.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "*://*.facebook.com/messages/*",
+        "*://business.facebook.com/*",
+        "*://adsmanager.facebook.com/*",
+        "*://*.instagram.com/direct/*",
+        "*://*.instagram.com/accounts/*",
+        "*://*.tiktok.com/messages*",
+        "*://studio.youtube.com/*",
+        "*://music.youtube.com/*"
+      ],
+      "js": ["engine/kaak-engine.js", "content/feed.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["pages/kaak.html"],
+      "matches": [
+        "*://*.instagram.com/*",
+        "*://*.facebook.com/*",
+        "*://*.tiktok.com/*",
+        "*://*.youtube.com/*",
+        "*://*.x.com/*",
+        "*://*.twitter.com/*",
+        "*://*.reddit.com/*"
+      ],
+      "use_dynamic_url": false
+    }
+  ],
+  "incognito": "spanning"
+}

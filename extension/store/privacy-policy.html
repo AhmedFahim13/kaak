@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaak for the browser: privacy policy</title>
+<style>
+  :root { --ink: #1F1A17; --ink-2: #5B524C; --red: #EF4B3F; --line: #EEE8E2; --bg: #FFFFFF; --bg-2: #FAF7F4; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ink: #F4EFEA; --ink-2: #CFC6BF; --line: #3A3330; --bg: #1A1614; --bg-2: #241F1C; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 6px; font-weight: 900; }
+  h2 { font-size: 21px; margin: 32px 0 8px; font-weight: 800; }
+  p, li { color: var(--ink-2); }
+  strong { color: var(--ink); }
+  .meta { color: var(--ink-2); font-size: 15px; margin-bottom: 28px; }
+  .box { background: var(--bg-2); border: 2px solid var(--line); border-radius: 18px; padding: 16px 18px; margin: 18px 0; }
+  .box p { margin: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink); }
+  a { color: var(--red); }
+  .wide { overflow-x: auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kaak for the browser: privacy policy</h1>
+  <div class="meta">Version 0.1.0 · Last updated 27 October 2026 · Publisher: Fahim Ahmed · Contact: <a href="mailto:theoslab.dev@gmail.com">theoslab.dev@gmail.com</a></div>
+
+  <div class="box"><p><strong>In one sentence:</strong> Kaak doesn't collect, send or sell anything. Everything he
+  keeps stays in your browser on your computer, and the extension makes no internet connections at all.</p></div>
+
+  <h2>What Kaak is</h2>
+  <p>Kaak is a browser extension with a cartoon crow who interrupts mindless scrolling on Instagram, Facebook,
+  TikTok and YouTube (and X or Reddit, only if you switch them on). It works in Chromium browsers such as
+  Microsoft Edge, Opera, Chrome, Brave and Vivaldi.</p>
+
+  <h2>What Kaak looks at, and what he never reads</h2>
+  <p>Your browser says Kaak can "read and change your data" on the feed sites. That's the only way an extension
+  can draw a crow on a page. What Kaak actually uses on those sites:</p>
+  <ul>
+    <li><strong>That you scrolled, and when:</strong> mouse wheel, trackpad, touch swipes and scrolling keys, as timestamps and counts.</li>
+    <li><strong>Whether a key was a scrolling key or a typing key.</strong> The key is looked at only to sort it into one of those two; which letter it was is never kept. Typing in a comment box only tells Kaak "typing happened".</li>
+    <li><strong>Which kind of page you're on</strong> (a Short, a Reel, a feed, a chat), read from the page address while the page is open, so Kaak knows whether it's a feed and when a new video starts. The address is not stored or sent anywhere.</li>
+    <li><strong>Whether the tab is in front</strong> and whether your screen is locked, so only real feed time counts.</li>
+  </ul>
+  <p>Kaak <strong>never</strong> reads posts, captions, comments, names, profiles, messages, images or anything you type,
+  and never takes screenshots. He never runs on chat pages (Messenger, Instagram and TikTok messages), YouTube Studio,
+  Business Suite or YouTube Music, and never on any site that isn't one of the feeds above.</p>
+  <p>If you pick a learning site for a "bribe" (for example Duolingo or Khan Academy), your browser first asks you to
+  allow that one site. Kaak then learns only whether that site's tab is in front, every few seconds, until the bribe is done.</p>
+
+  <h2>What Kaak keeps, and where</h2>
+  <p>Kaak stores the following in your browser's extension storage on your computer. Nothing is sent anywhere.</p>
+  <div class="wide"><table>
+    <tr><th>What</th><th>Why</th><th>How long</th></tr>
+    <tr><td>Settings (feeds, limit, bedtime, language and so on)</td><td>So Kaak behaves the way you set him up</td><td>Until you change them or remove Kaak</td></tr>
+    <tr><td>Daily numbers: feed minutes, how many times Kaak stopped you, escapes, bribes, mood-check answers, "worth it?" answers</td><td>Daily limit, trust, Kaak Times</td><td>The last 30 days</td></tr>
+    <tr><td>Wallet: bribe minutes, trust points, the loot in Kaak's nest</td><td>Rewards</td><td>Until you remove Kaak</td></tr>
+    <tr><td>An activity log: times, minutes, counts and what Kaak did (for example "arrived", "theft, won")</td><td>"Share my stats", if you choose to share it</td><td>The last 4,000 lines</td></tr>
+    <tr><td>Error reports from Kaak's own code</td><td>"Report a problem", if you choose to send it</td><td>The last 200</td></tr>
+  </table></div>
+  <p>None of these contain page addresses, page content or anything you typed. Notes you write for a bribe are
+  thrown away: only the number of words is checked. Drawings are never saved.</p>
+
+  <h2>Sharing</h2>
+  <p>Nothing leaves your computer unless you do it yourself. "Share my stats" downloads a file to your computer, and
+  "Report a problem" copies text for you to paste into an email. You decide whether to send either.
+  Kaak doesn't use the browser's sync storage, analytics, ads, trackers, cookies or any server.</p>
+
+  <h2>Redirects during a nap or a theft</h2>
+  <p>When Kaak "eats" a feed after your daily limit (a 20-minute nap), or holds a feed he stole, your browser sends
+  the feed sites to Kaak's own page until the timer ends or you win the chase. These rules apply only to the feed sites,
+  never to chat or work pages, and are removed as soon as the timer ends or you remove the extension.</p>
+
+  <h2>One thing a site could learn</h2>
+  <p>For those redirects to work, the browser requires Kaak's nap page to be reachable by the feed sites. That means a
+  feed site <em>could</em> check whether that page exists and learn that Kaak is installed. It can't learn anything else
+  from it.</p>
+
+  <h2>Deleting everything</h2>
+  <p>Remove Kaak from your browser's extensions page. That deletes everything he stored and every redirect rule.</p>
+
+  <h2>Children</h2>
+  <p>Kaak doesn't collect personal information from anyone, including children.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes (for example if optional sync with Kaak's phone app is ever added), the new version will be
+  published here before the extension changes, with a new date at the top. Sync, if it comes, will be off by default.</p>
+
+  <h2>Contact</h2>
+  <p>Fahim Ahmed · <a href="mailto:theoslab.dev@gmail.com">theoslab.dev@gmail.com</a></p>
+</main>
+</body>
+</html>

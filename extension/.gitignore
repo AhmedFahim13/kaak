@@ -1,0 +1,4 @@
+# dev-only outputs of test/e2e and pack
+test/e2e/.cert/
+test/e2e/shots/
+dist/

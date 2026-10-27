@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kaak</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  body { width: 320px; min-height: 0; }
+  .wrap { padding: 14px 14px 16px; }
+  .top { margin-bottom: 10px; }
+  .top canvas { width: 54px; height: 54px; }
+  .card { padding: 14px; margin-bottom: 12px; }
+  .status { font: 800 14px var(--font); }
+  .row .btn { flex: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <canvas id="crow" width="108" height="108" aria-hidden="true"></canvas>
+    <div>
+      <h2 style="margin:0">Kaak</h2>
+      <div class="status muted" id="status">…</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="spread"><span class="muted">Feed time today</span><span class="tag grey" id="trust">Stranger</span></div>
+    <div class="stat" id="minutes">0<small>/ 60 min</small></div>
+    <div class="bar" style="margin-top:10px"><i id="bar"></i></div>
+  </div>
+  <div class="card soft hidden" id="giftCard">
+    <h3 id="giftTitle">Kaak left you something.</h3>
+    <button class="btn small main" id="giftOpen" type="button">Open</button>
+  </div>
+  <p class="muted" id="pauseLabel" style="margin:0 0 6px">Pause Kaak for</p>
+  <div class="row" id="pauseRow" style="margin-bottom:10px">
+    <button class="btn small" data-pause="30" type="button">30 min</button>
+    <button class="btn small" data-pause="60" type="button">1 hour</button>
+    <button class="btn small" data-pause="tomorrow" type="button">Tomorrow</button>
+  </div>
+  <button class="btn small hidden" id="resume" type="button" style="width:100%;margin-bottom:10px">Resume Kaak</button>
+  <p class="muted hidden" id="pauseNote"></p>
+  <button class="btn main block" id="open" type="button">Open Kaak</button>
+</div>
+<script src="../engine/kaak-engine.js"></script>
+<script type="module" src="popup.js"></script>
+</body>
+</html>
