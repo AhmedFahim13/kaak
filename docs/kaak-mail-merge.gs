@@ -80,7 +80,7 @@ function lookupFirstName_(email) {
     const threads = GmailApp.search('from:' + email, 0, 5);
     for (const t of threads) {
       for (const m of t.getMessages()) {
-        const from = m.getFrom(); // e.g. "Rumaisa Younus Wahi <wahirumaisa@gmail.com>"
+        const from = m.getFrom(); // e.g. "Jane Doe <jane.doe@example.com>"
         if (from.toLowerCase().indexOf(email.toLowerCase()) < 0) continue;
         const name = from.replace(/<.*>/, '').replace(/"/g, '').trim();
         if (name && name.indexOf('@') < 0) return name.split(/\s+/)[0];
