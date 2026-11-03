@@ -1,8 +1,10 @@
 # Kaak
 
 Free Android app (Kotlin, no runtime libraries) where a petty Dhaka house crow, Kaak,
-interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built by Theos Lab
-(tester email: theoslab.dev@gmail.com). Current version: **0.10.1** (versionCode 13).
+interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built by Fahim Ahmed
+(GitHub AhmedFahim13). Theos Lab is only the Facebook page that promotes it; never use it as the
+publisher or signer. Tester/support email: theoslab.dev@gmail.com. Current version: **0.10.2**
+(local default versionCode 101; CI uses 100 + run number).
 
 ## Non-negotiables
 
@@ -35,7 +37,7 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 - Release signing reads `keystore.properties` locally or `KAAK_*` env vars in CI
   (`.github/workflows/release.yml`, triggered by tags `v*`). First run: v0.10.2 on 2026-10-17, both
   APKs signed `CN=Fahim Ahmed` (keystore `C:\Users\hp\kaak-release.jks`, outside the repo; back it
-  up). Repo: github.com/AhmedFahim13/kaak, private, so testers can't pull releases until it's public.
+  up). Repo: github.com/AhmedFahim13/kaak, private (stays so), so testers get APKs directly.
 - Gradle 8.9 needs JDK 17–22. On this PC `JAVA_HOME` is unset and Android Studio's bundled JBR
   is JDK 25 (fails with just "25.0.3"); use `C:\Users\hp\.jdks\jbr-21.0.11`.
 - Real-device testing has been two sessions on a Samsung Galaxy M33. There is also an emulator
@@ -88,9 +90,13 @@ interrupts mindless scrolling in Instagram, Facebook, YouTube and TikTok. Built 
 3. Rep thresholds tuned on simulated motion only. Battery use unmeasured.
 4. 5-friend pilot and 40-person study not started. Anyone with an earlier debug-signed build must
    uninstall it before installing the release-signed v0.10.2 (different signature).
-   The workflow's actions run on deprecated Node 20 (`setup-java@v4` etc.): bump to v5 at some point.
-5. Browser extension (Chromium only): spec at `docs/browser-extension-spec.md`. Being built in
-   `extension/` by a separate session (not committed yet).
+   Workflow actions were bumped to current majors (checkout@v7, setup-java@v6, setup-gradle@v6,
+   action-gh-release@v3, upload-artifact@v7) on 2026-11-03; untested until the next `v*` tag.
+5. Browser extension (Chromium only): spec at `docs/browser-extension-spec.md`; 0.1.0 (M0–M4) is
+   built and committed in `extension/` (see `extension/README.md`, incl. its known gaps). Store kit
+   in `extension/store/` (Edge + Opera, not submitted). Privacy policy is public at
+   ahmedfahim13.github.io/kaak-privacy (repo `kaak-privacy`). The `kaak` repo stays private: old
+   commits contain a tester's email, and the user declined a history rewrite.
 
 ## Other files
 

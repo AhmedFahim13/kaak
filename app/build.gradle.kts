@@ -23,8 +23,8 @@ android {
         minSdk = 29          // Android 10+
         targetSdk = 35
         // CI sets these from the run number and the git tag; local builds use the defaults.
-        versionCode = (System.getenv("KAAK_VERSION_CODE") ?: "13").toInt()
-        versionName = System.getenv("KAAK_VERSION_NAME") ?: "0.10.1"
+        versionCode = (System.getenv("KAAK_VERSION_CODE") ?: "101").toInt()
+        versionName = System.getenv("KAAK_VERSION_NAME") ?: "0.10.2"
     }
 
     buildFeatures {

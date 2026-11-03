@@ -134,7 +134,7 @@ describe('KaakTimesTest', () => {
 
   test('firstWeekStillPrints', () => {
     const e = KaakTimes.compose([], [], 'x', Random(3));
-    assert.equal(e.headline, 'CROW MOVES INTO LOCAL PHONE');
+    assert.equal(e.headline, 'CROW MOVES INTO LOCAL BROWSER');
     assert.ok(e.stories.length > 0);
   });
 

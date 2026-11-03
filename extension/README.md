@@ -85,6 +85,6 @@ forward with a test hook, so a day of scrolling takes about two minutes. Screens
   overlay and the first-time card all worked). Instagram, Facebook and TikTok's real pages, and the
   mouse-wheel swipe definition on a slowly read Facebook feed (spec 5.1), still need a person.
 - Bribe rewards for the new desktop bribes (`away5` 5 min, `away20` 10 min + tea cup, `nofeed30`
-  15 min + coin) are first guesses. Kaak Times still uses some phone wording ("phone").
+  15 min + coin) are first guesses.
 - No caw sound yet. The "Report a problem" email goes to theoslab.dev@gmail.com.
 - Sync with the phone (M5), store listings, Firefox: not started.

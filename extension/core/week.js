@@ -217,7 +217,7 @@ export const KaakTimes = Object.freeze({
     ));
     if (angles.length === 0) angles.push(Angle(
       0.1,
-      'CROW MOVES INTO LOCAL PHONE',
+      'CROW MOVES INTO LOCAL BROWSER',
       'Neighbours describe him as "loud" and "a thief."',
       Story('Settling in', 'Kaak has unpacked. He did not bring much. He intends to take a lot.'),
     ));
@@ -238,7 +238,7 @@ export const KaakTimes = Object.freeze({
         : avg <= 75 ? 'Feed forecast: heavy scrolling, carry a crow.'
           : 'Feed forecast: doomscroll warning in effect.';
     const classified = pick(
-      'WANTED: one (1) phone charger, last seen near the bed. Ask for Kaak.',
+      'WANTED: one (1) laptop charger, last seen under the desk. Ask for Kaak.',
       'FOR TRADE: bottle caps, various. Will accept coins, keys, or a balcony.',
       'LOST: your attention span. If found, please return to its owner.',
       'SEEKING: a human who sleeps before midnight. Must like crows.',
